@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/idnm/studyGroup.git'
+                git 'https://github.com/ManoharAI/studyGroups.git'
             }
         }
 
