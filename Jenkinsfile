@@ -16,7 +16,7 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean install'
             }
         }
 
@@ -28,21 +28,21 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                sh 'docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest .'
+                bat 'docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest .'
             }
         }
 
         stage('Docker Push') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
-                    sh 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
+                    bat 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
                 }
             }
         }
 
         stage('Deploy Container') {
             steps {
-                sh '''
+                bat '''
                 docker stop my_container || true
                 docker rm my_container || true
                 docker run -d --name my_container -p ${APP_PORT}:8080 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
