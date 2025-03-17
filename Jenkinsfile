@@ -4,8 +4,8 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'name'
         DOCKER_REGISTRY = 'register_name'
-        APP_PORT = '8080'
-        SONAR_PROJECT_KEY = 'StudyGroups'
+        APP_PORT = '8080' // Port on which your application listens
+        SONAR_PROJECT_KEY = 'studyGroups'
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_SCANNER_CLI = 'SonarQubeScanner'
     }
@@ -40,11 +40,6 @@ pipeline {
                 bat 'docker build -t %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest .'
             }
         }
-        stage('Docker Push') {
-            steps {
-                    bat 'docker push %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest'
-            }
-        }
         stage('Deploy Container') {
             steps {
                 bat '''
@@ -61,7 +56,7 @@ pipeline {
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
         }
         cleanup {
-            bat 'docker system prune -f'
+            sh 'docker system prune -f'
         }
     }
 }
