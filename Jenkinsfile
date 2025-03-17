@@ -27,9 +27,9 @@ pipeline {
                     withCredentials([string(credentialsId: 'Sonar-token', variable: 'SONAR_TOKEN')]) {
                         bat ''' 
                         mvn sonar:sonar ^
-                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
-                        -Dsonar.host.url=${SONAR_HOST_URL} ^
-                        -Dsonar.login=${SONAR_TOKEN}
+                        -Dsonar.projectKey=%SONAR_PROJECT_KEY% ^
+                        -Dsonar.host.url=%SONAR_HOST_URL% ^
+                        -Dsonar.login=%SONAR_TOKEN%
                         '''
                     }
                 }
@@ -37,13 +37,13 @@ pipeline {
         }
         stage('Docker Build') {
             steps {
-                bat 'docker build -t ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest .'
+                bat 'docker build -t %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest .'
             }
         }
         stage('Docker Push') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
-                    bat 'docker push ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
+                    bat 'docker push %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest'
                 }
             }
         }
@@ -52,7 +52,7 @@ pipeline {
                 bat '''
                 docker stop my_container || true
                 docker rm my_container || true
-                docker run -d --name my_container -p ${APP_PORT}:8080 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
+                docker run -d --name my_container -p %APP_PORT%:8080 %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest
                 '''
             }
         }
