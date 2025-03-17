@@ -10,9 +10,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                    sh 'git clone https://$GIT_USER:$GIT_PASS@github.com/ManoharAI/studyGroups.git'
-                }
+                    git branch: 'main', url: 'https://github.com/ManoharAI/studyGroups.git'
             }
         }
 
