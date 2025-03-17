@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'name'
-        DOCKER_REGISTRY = 'register_name'
+        DOCKER_REGISTRY = 'Manohar_BCD27'
         APP_PORT = '8080' // Port on which your application listens inside the container
         SONAR_PROJECT_KEY = 'StudyGroups'
         SONAR_HOST_URL = 'http://localhost:9000'
