@@ -4,12 +4,15 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'name'
         DOCKER_REGISTRY = 'register_name'
+        APP_PORT = '8080' // Change if needed
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/ManoharAI/studyGroups.git'
+                withCredentials([usernamePassword(credentialsId: 'github-credentials', usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                    sh 'git clone https://$GIT_USER:$GIT_PASS@github.com/ManoharAI/studyGroups.git'
+                }
             }
         }
 
@@ -41,7 +44,11 @@ pipeline {
 
         stage('Deploy Container') {
             steps {
-                sh 'docker run -d -p 8080:8080 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest'
+                sh '''
+                docker stop my_container || true
+                docker rm my_container || true
+                docker run -d --name my_container -p ${APP_PORT}:8080 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
+                '''
             }
         }
     }
@@ -49,6 +56,9 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
+        }
+        cleanup {
+            sh 'docker system prune -f'
         }
     }
 }
