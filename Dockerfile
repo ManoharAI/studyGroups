@@ -4,7 +4,7 @@ WORKDIR /app
 
 # Copy Maven configuration and Java source code
 COPY pom.xml .
-COPY src ./src
+#COPY src ./src
 
 # Build the application (skipping tests)
 RUN mvn clean package -DskipTests
