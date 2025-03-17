@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'name'
         DOCKER_REGISTRY = 'register_name'
         APP_PORT = '8080'
-        SONAR_PROJECT_KEY = 'studyGroups'
+        SONAR_PROJECT_KEY = 'StudyGroups'
         SONAR_HOST_URL = 'http://localhost:9000'
         SONAR_SCANNER_CLI = 'SonarQubeScanner'
     }
