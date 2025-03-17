@@ -42,9 +42,7 @@ pipeline {
         }
         stage('Docker Push') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: 'https://index.docker.io/v1/']) {
                     bat 'docker push %DOCKER_REGISTRY%/%DOCKER_IMAGE%:latest'
-                }
             }
         }
         stage('Deploy Container') {
