@@ -56,7 +56,7 @@ pipeline {
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
         }
         cleanup {
-            sh 'docker system prune -f'
+            bat 'docker system prune -f'
         }
     }
 }
