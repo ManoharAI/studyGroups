@@ -5,12 +5,15 @@ pipeline {
         DOCKER_IMAGE = 'name'
         DOCKER_REGISTRY = 'register_name'
         APP_PORT = '8080' // Change if needed
+        SONAR_PROJECT_KEY = 'studyGroups'  // Change to your actual project key
+        SONAR_HOST_URL = 'http://localhost:9000'  // Change if your SonarQube is hosted elsewhere
+        SONAR_SCANNER_CLI = 'SonarQubeScanner' // Jenkins tool name for SonarScanner
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                    git branch: 'main', url: 'https://github.com/ManoharAI/studyGroups.git'
+                git branch: 'main', url: 'https://github.com/ManoharAI/studyGroups.git'
             }
         }
 
@@ -20,9 +23,16 @@ pipeline {
             }
         }
 
-        stage('Run JUnit Tests') {
+        stage('SonarQube Analysis') {
             steps {
-                junit '**/target/surefire-reports/*.xml'
+                withSonarQubeEnv('SonarQube') { // 'SonarQube' is the Jenkins SonarQube server name
+                    bat ''' 
+                    mvn sonar:sonar ^
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
+                    -Dsonar.host.url=${SONAR_HOST_URL} ^
+                    -Dsonar.login=${SONAR_TOKEN}
+                    '''
+                }
             }
         }
 
