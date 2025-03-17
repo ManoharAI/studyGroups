@@ -23,18 +23,17 @@ pipeline {
             }
         }
 
-        stage('SonarQube Analysis') {
-            steps {
-                withSonarQubeEnv('SonarQube') { // 'SonarQube' is the Jenkins SonarQube server name
-                    bat ''' 
-                    mvn sonar:sonar ^
-                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
-                    -Dsonar.host.url=${SONAR_HOST_URL} ^
-                    -Dsonar.login=${SONAR_TOKEN}
-                    '''
-                }
-            }
-        }
+        withSonarQubeEnv('SonarQube') {
+    withCredentials([string(credentialsId: 'Sonar-token', variable: 'SONAR_TOKEN')]) {
+        bat ''' 
+        mvn sonar:sonar ^
+        -Dsonar.projectKey=${SONAR_PROJECT_KEY} ^
+        -Dsonar.host.url=${SONAR_HOST_URL} ^
+        -Dsonar.login=${SONAR_TOKEN}
+        '''
+    }
+}
+
 
         stage('Docker Build') {
             steps {
